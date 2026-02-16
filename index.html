@@ -1,147 +1,156 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>THE DECISION</title>
-    <style>
-        /* CSSは以前のものを共通化して適用 */
-        :root { --bg-color: #1a1a1a; --text-color: #ffffff; --success-color: #ffd700; }
-        body { background-color: var(--bg-color); color: var(--text-color); margin: 0; font-family: 'Helvetica Neue', Arial, sans-serif; height: 100vh; transition: all 0.6s ease; overflow: hidden; }
-        .screen { display: none; height: 100vh; flex-direction: column; justify-content: space-around; align-items: center; text-align: center; }
-        .screen.active { display: flex; }
-        
-        /* 共通ボタン（iPhone風） */
-        .btn-ios { background-color: var(--bg-color); border: none; color: #eee; width: 85%; max-width: 320px; padding: 24px 0; font-size: 1.2rem; border-radius: 20px; cursor: pointer; box-shadow: 8px 8px 16px #0d0d0d, -8px -8px 16px #272727; transition: all 0.2s; outline: none; -webkit-tap-highlight-color: transparent; }
-        .btn-ios:active { transform: scale(0.98); box-shadow: inset 6px 6px 12px #0d0d0d, inset -6px -6px 12px #272727; }
-
-        /* ゲーム固有のスタイル */
-        h1.big-title { font-weight: 200; letter-spacing: 0.4em; font-size: 2.2rem; }
-        .angle-display { font-size: 200px; font-weight: 100; transition: all 0.3s; }
-        .msg-display { font-size: 1.8rem; font-weight: 400; color: #888; min-height: 2.2em; }
-        
-        body.success-bg { background-color: #1a1600; box-shadow: inset 0 0 150px rgba(255, 215, 0, 0.2); }
-        .success-text { color: var(--success-color) !important; text-shadow: 0 0 30px rgba(255, 215, 0, 0.6); }
-    </style>
-</head>
-<body>
-
-    <div id="screen-home" class="screen active">
-        <h1 class="big-title">DECISION</h1>
-        <div style="display:flex; flex-direction:column; width:100%; align-items:center; gap:20px;">
-            <button class="btn-ios" onclick="gm.loadGame('north')">TRUE NORTH</button>
-            <button class="btn-ios" style="opacity:0.3">COMING SOON...</button>
-        </div>
-    </div>
-
-    <div id="screen-north" class="screen">
-        <h1 style="font-size:1.2rem; color:#888; letter-spacing:0.3em;">TRUE NORTH</h1>
-        <div id="north-val" class="angle-display">---°</div>
-        <p id="north-msg" class="msg-display">FIND THE NORTH</p>
-        <button id="north-btn" class="btn-ios">MEASURE</button>
-        <div onclick="gm.goHome()" style="color:#444; cursor:pointer; border-bottom:1px solid #333;">BACK TO HOME</div>
-    </div>
-
-    <script>
-        /**
-         * 1. GameManager: 全体の進行管理 (SceneManagerに相当)
-         */
-        class GameManager {
-            constructor() {
-                this.screens = {
-                    home: document.getElementById('screen-home'),
-                    north: document.getElementById('screen-north')
-                };
-                this.currentGame = null;
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="="width=device-width, initial-scale="1.0", maximum-scale="1.0", user-scalable="no">
+        <title>あなた今北向いてる？</title>
+        <style>
+            :root{
+                --bg-color: #1a1a1a;
+                --text-color: #ffffff;
+                --success-color: #ffd700;
             }
 
-            loadGame(gameId) {
-                // 画面遷移
-                Object.values(this.screens).forEach(s => s.classList.remove('active'));
-                this.screens[gameId].classList.add('active');
-
-                // ゲームインスタンス生成 (UnityのScene Loadのようなイメージ)
-                if (gameId === 'north') {
-                    this.currentGame = new NorthGame();
-                }
+            body {
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                text-align: center;
+                padding: 0;
+                margin: 0;
+                font-family: 'Helvetica Neue', Arial, sans-serif;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-around;
+                align-items: center;
+                transition: all 0.6s ease;
+                overflow: hidden;
             }
 
-            goHome() {
-                if(this.currentGame) this.currentGame.destroy();
-                Object.values(this.screens).forEach(s => s.classList.remove('active'));
-                this.screens.home.classList.add('active');
-                document.body.classList.remove('success-bg');
-            }
-        }
-
-        /**
-         * 2. BaseGame: ゲームの基底クラス (MonoBehaviourのような役割)
-         */
-        class BaseGame {
-            constructor() {
-                this.isFinished = false;
-            }
-            destroy() {
-                // イベントリスナーの解除など（メモリリーク防止）
-            }
-        }
-
-        /**
-         * 3. NorthGame: 「北向き」ゲームの実装
-         */
-        class NorthGame extends BaseGame {
-            constructor() {
-                super();
-                this.heading = 0;
-                this.display = document.getElementById('north-val');
-                this.msg = document.getElementById('north-msg');
-                this.btn = document.getElementById('north-btn');
-
-                // Unityの Update() 代わりのリスナー
-                this.orientationHandler = (e) => {
-                    this.heading = e.webkitCompassHeading || (360 - e.alpha);
-                };
-                window.addEventListener('deviceorientation', this.orientationHandler, true);
-
-                this.btn.onclick = () => this.play();
+            body.success{
+                background-color: #1a1600;
+                box-shadow: inset 0 0 150px rgba(255, 215, 0, 0.2);
             }
 
-            async play() {
+            header{
+                margin-top: 40px;
+            }
+
+            h1{
+                font-weight: 200;
+                letter-spacing: 0.4em;
+                font-size: 2.2rem;
+                color: #ffffff;
+                margin-top: 60px;
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+            }
+
+            #angle-container{
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            #angle{
+                font-size: 200px;
+                font-weight: 100;
+                line-height: 1;
+                margin: 0;
+                font-variant-numeric: tabular-nums;
+                transition: color 0.3s;
+                letter-spacing: -0.05em;
+            }
+
+            #msg{
+                font-size: 1.8rem;
+                font-weight: 400;
+                color: #888;
+                margin-top: 20px;
+                letter-spacing: 0.1em;
+                min-height: 2.2em;
+                transition: all 0.4s ease;
+            }
+
+            footer{
+                margin-bottom: 80px;
+                width: 100%;
+            }
+
+            button{
+                background-color: var(--bg-color);
+                border: none;
+                color: #eee;
+                width: 85%;
+                max-width: 320px;
+                padding: 24px 0;
+                font-size: 1.2rem;
+                font-weight: 400;
+                letter-spacing: 0.15em;
+                border-radius: 20px;
+                cursor: pointer;
+                outline: none;
+                box-shadow: 8px 8px 16px #0d0d0d, -8px -8px 16px #272727;
+                transition: all 0.2s ease;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            button:active{
+                transform: scale(0.98);
+                box-shadow:
+                    inset 6px 6px 12px #0d0d0d,
+                    inset -6px -6px 12px #272727;
+                color: var(--success-color);
+            }
+
+            body.success #angle{
+                text-shadow:
+                    0 0 30px rgba(255, 215, 0, 0.6);
+                color: var(--success-color);
+            }
+        </style>
+    </head>
+    <body>
+        <h1>北(0°)を向け！</h1>
+
+        <div id="angle">---°</div>
+        <p id="msg">スマホで開いて、ボタンを押してね</p>
+        <button id="start-btn">計測開始</button>
+
+        <script>
+            let currentHeading = 0;
+
+            window.addEventListener('deviceorientation', (event) => {
+                currentHeading = event.webkitCompassHeading || (360 - event.alpha);
+            }, true);
+
+            const angleDisplay = document.getElementById('angle');
+            const msgDisplay = document.getElementById('msg');
+            const btn = document.getElementById('start-btn');
+
+            btn.addEventListener('click', async () => {
                 if(typeof DeviceOrientationEvent.requestPermission === 'function'){
                     const permission = await DeviceOrientationEvent.requestPermission();
                     if(permission !== 'granted') return;
                 }
 
-                let rounded = Math.round(this.heading);
+                let rounded = Math.round(currentHeading);
                 if(rounded === 360) rounded = 0;
-                
-                this.display.innerText = rounded + "°";
 
-                if(rounded === 0) {
-                    document.body.classList.add('success-bg');
-                    this.display.classList.add('success-text');
-                    this.msg.innerText = "TRUE NORTH FOUND";
-                    this.msg.classList.add('success-text');
-                } else {
-                    document.body.classList.remove('success-bg');
-                    this.display.classList.remove('success-text');
-                    this.msg.innerText = "NOT THE NORTH";
-                    this.msg.classList.remove('success-text');
+                angleDisplay.innerText = rounded + "° ";
+
+                if(rounded === 0){
+                    document.body.classList.add('success');
+                    msgDisplay.innerText = "ぴったり！北です！";
+                    msgDisplay.style.color = "#ffd700";
+                }else{
+                    document.body.classList.remove('success');
+                    msgDisplay.innerText = "北じゃないよ！";
+                    msgDisplay.style.color = "#444";
                 }
-                this.btn.innerText = "RE-MEASURE";
-            }
 
-            destroy() {
-                // Unityの OnDestroy() 的な処理
-                window.removeEventListener('deviceorientation', this.orientationHandler, true);
-                this.display.classList.remove('success-text');
-                this.msg.classList.remove('success-text');
-                console.log("NorthGame Destroyed");
-            }
-        }
-
-        // 初期化
-        const gm = new GameManager();
-    </script>
-</body>
+                btn.innerText = "もう一度計測する";
+            });
+        </script>
+    </body>
 </html>
