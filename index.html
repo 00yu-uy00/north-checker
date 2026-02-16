@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>北向いてる？</title>
+        <style>
+            body {text-align: center; padding: 50px; font-family: sans-serif;}
+            #angle {font-size: 80px; margin: 20px;}
+            .success {background-color: gold;}
+        </style>
+    </head>
+    <body>
+        <h1>北(0°)を向け！</h1>
+        <div id="angle">---°</div>
+        <p id="msg">スマホで開いて、下のボタンを押してね</p>
+        <button id="start-btn"  style="padding: 10px 20px;">計測開始</button>
+
+        <script>
+            const angleDisplay = document.getElementsById('angle');
+            const msgDisplay = document.getElementById('msg');
+            const btn = document.getElementById('start-btn');
+
+            btn.addEventListener('click', () => {
+                if(typeof DeviceOrientationEvent.requestPermission === 'function'){
+                    DeviceOrientationEvent.requestPermission().then(PermissionState => {
+                        if (PermissionState === 'granted'){
+                            startTracking();
+                        }
+                    });
+                }else{
+                    startTracking();
+                }
+            });
+
+            function startTracking(){
+                btn.style.display = 'none';
+
+                window.addEventListener('deviceorientation', (event) => {
+                    let heading = event.webkitCompassHeading || (360 - event.alpha);
+                    let rounded = Math.round(heading);
+
+                    angleDisplay.innerText = rounded + "°";
+
+                    if(rounded >= 355 || rounded <= 5){
+                        document.body.classList.add('success');
+                        msgDisplay.innerText = "北です！";
+                    }else{
+                        document.body.classList.remove('success');
+                        msgDisplay.innerText = 'そっちじゃない！';
+                    }
+                }, true);
+            }
+        </script>
+    </body>
+</html>
+
+<h1>北を向いているか？</h1>
+<div id="status">ここに角度が出ます</div>
+<button id="btn">計測スタート</button> 
