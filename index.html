@@ -28,8 +28,8 @@
 
             btn.addEventListener('click', async () => {
                 if(typeof DeviceOrientationEvent.requestPermission === 'function'){
-                    const permission = await DeviveOrientationEvent.requestPermission();
-                    if(permission !== 'grantet') return;
+                    const permission = await DeviceOrientationEvent.requestPermission();
+                    if(permission !== 'granted') return;
                 }
 
                 let rounded = Math.round(currentHeading);
