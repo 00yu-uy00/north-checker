@@ -16,44 +16,37 @@
         <button id="start-btn"  style="padding: 10px 20px;">計測開始</button>
 
         <script>
+            let currentHeading = 0;
+
+            window.addEventListener('deviceorientation', (event) => {
+                currentHeading = event.webkitCompassHeading || (360 - event.alpha);
+            }, true);
+
             const angleDisplay = document.getElementById('angle');
             const msgDisplay = document.getElementById('msg');
             const btn = document.getElementById('start-btn');
 
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', async () => {
                 if(typeof DeviceOrientationEvent.requestPermission === 'function'){
-                    DeviceOrientationEvent.requestPermission().then(permissionState => {
-                        if (permissionState === 'granted'){
-                            startTracking();
-                        }
-                    });
-                }else{
-                    startTracking();
+                    const permission = await DeviveOrientationEvent.requestPermission();
+                    if(permission !== 'grantet') return;
                 }
+
+                let rounded = Math.round(currentHeading);
+                if(rounded === 360) rounded = 0;
+
+                angleDisplay.innerText = rounded + "° ";
+
+                if(rounded === 0){
+                    document.body.classList.add('success');
+                    msgDisplay.innerText = "ぴったり！北です！";
+                }else{
+                    document.body.classList.remove('success');
+                    msgDisplay.innerText = "北じゃないよ！";
+                }
+
+                btn.innerText = "もう一度計測する";
             });
-
-            function startTracking(){
-                btn.style.display = 'none';
-
-                window.addEventListener('deviceorientation', (event) => {
-                    let heading = event.webkitCompassHeading || (360 - event.alpha);
-                    let rounded = Math.round(heading);
-
-                    if(rounded === 360){
-                        rounded = 0;
-                    }
-
-                    angleDisplay.innerText = rounded + "°";
-
-                    if(rounded >= 355 || rounded <= 5){
-                        document.body.classList.add('success');
-                        msgDisplay.innerText = "北です！";
-                    }else{
-                        document.body.classList.remove('success');
-                        msgDisplay.innerText = 'そっちじゃない！';
-                    }
-                }, true);
-            }
         </script>
     </body>
 </html>
