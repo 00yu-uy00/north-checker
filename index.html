@@ -63,12 +63,13 @@
             }
 
             #msg{
-                font-size: 1.1rem;
-                font-weight: 300;
-                color: #666;
+                font-size: 1.8rem;
+                font-weight: 400;
+                color: #888;
                 margin-top: 20px;
                 letter-spacing: 0.1em;
-                min-height: 1.5em;
+                min-height: 2.2em;
+                transition: all 0.4s ease;
             }
 
             footer{
@@ -145,7 +146,7 @@
                 }else{
                     document.body.classList.remove('success');
                     msgDisplay.innerText = "北じゃないよ！";
-                    msgDisplay.style.color = "#666";
+                    msgDisplay.style.color = "#444";
                 }
 
                 btn.innerText = "もう一度計測する";
