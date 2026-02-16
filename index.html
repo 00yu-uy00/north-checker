@@ -2,18 +2,89 @@
 <html lang="ja">
     <head>
         <meta charset="UTF-8">
-        <title>北向いてる？</title>
+        <meta name="viewport" content="="width=device-width, initial-scale=1.0">
+        <title>あなた今北向いてる？</title>
         <style>
-            body {text-align: center; padding: 50px; font-family: sans-serif;}
-            #angle {font-size: 80px; margin: 20px;}
-            .success {background-color: gold;}
+            :root{
+                --bg-color: #121212;
+                --text-color: #ffffff;
+                --accent-color: #444;
+                --success-color: #ffd700;
+            }
+            body {
+                background-color: var(--bg-color);
+                color: var(--text-color);
+                text-align: center;
+                padding: 0;
+                margin: 0;
+                font-family: 'Helvetica Neue', Arial, sans-serif;
+                height: 100vh;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                transition: all 0.8s ease;
+            }
+
+            body.success{
+                background-color: #2b2500;
+                box-shadow: inset 0 0 100px var(--success-color);
+            }
+
+            h1{
+                font-weight: 200;
+                letter-spacing: 0.2em;
+                font-size: 1.2rem;
+                margin-bottom: 40px;
+                color: #888;
+            }
+
+
+            #angle{
+                font-size: 120px;
+                font-weight: 100;
+                margin: 20px 0;
+                font-variant-numeric: tabular-nums;
+            }
+
+            #msg{
+                font-size: 0.9rem;
+                color: #666;
+                margin-bottom: 40px;
+                height: 1,5em;
+            }
+
+            button{
+                background: none;
+                border: 1px solid var(--accent-color);
+                color: var(--text-color);
+                padding: 15px 40px;
+                font-size: 1rem;
+                letter-spacing: 0.1em;
+                border-radius: 50px;
+                cursor: pointer;
+                transition: all 0.3s;
+                outline: none;
+            }
+
+            button:active{
+                transform: scale(0.95);
+                background-color: #fff;
+                color: #000;
+            }
+
+            body.success #angle{
+                color: var(--success-color);
+                text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            }
         </style>
     </head>
     <body>
         <h1>北(0°)を向け！</h1>
+
         <div id="angle">---°</div>
-        <p id="msg">スマホで開いて、下のボタンを押してね</p>
-        <button id="start-btn"  style="padding: 10px 20px;">計測開始</button>
+        <p id="msg">スマホで開いて、ボタンを押してね</p>
+        <button id="start-btn">計測開始</button>
 
         <script>
             let currentHeading = 0;
@@ -40,9 +111,11 @@
                 if(rounded === 0){
                     document.body.classList.add('success');
                     msgDisplay.innerText = "ぴったり！北です！";
+                    msgDisplay.style.color = "#ffd700";
                 }else{
                     document.body.classList.remove('success');
                     msgDisplay.innerText = "北じゃないよ！";
+                    msgDisplay.style.color = "#666";
                 }
 
                 btn.innerText = "もう一度計測する";
